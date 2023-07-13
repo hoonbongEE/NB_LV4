@@ -5,42 +5,29 @@ const { Users, Posts, Likes } = require('../models');
 
 // 좋아요 추가, 취소 API
 router.put('/:postId', authMiddleware, async (req, res) => {
-  const { postId } = req.params;
-  const { user } = res.locals;
+  const { postId } = req.params; // URL에서 postId 파라미터 추출
+  const { user } = res.locals; // 인증된 사용자 정보 추출
 
   try {
-    // 게시글 존재 여부 확인
-    const post = await Posts.findOne({
-      where: { postId },
-      attributes: ['postId', 'likes'],
+    const post = await Posts.findByPk(postId, {
+      attributes: ['postId', 'likes'], // 게시글의 postId와 likes 속성만 가져옴
     });
     if (!post) {
       return res.status(400).json({ error: '게시글이 존재하지 않습니다.' });
     }
 
-    const likes = await Likes.findOne({
-      where: { UserId: user.userId, PostId: postId },
+    const [like, created] = await Likes.findOrCreate({
+      where: { UserId: user.userId, PostId: postId }, // 사용자와 게시글에 대한 좋아요 찾기 또는 생성
     });
 
-    // 좋아요 추가
-    if (!likes) {
-      await Posts.update(
-        { likes: post.likes + 1 },
-        { where: { postId: post.postId } }
-      );
-      await Likes.create({ UserId: user.userId, PostId: postId });
+    if (created) {
+      await post.increment('likes'); // 게시글의 likes 속성을 1 증가
       return res
         .status(200)
         .json({ message: '게시글의 좋아요를 등록하였습니다.' });
-    }
-
-    // 좋아요 취소
-    if (likes) {
-      await Posts.update(
-        { likes: post.likes - 1 },
-        { where: { postId: post.postId } }
-      );
-      await Likes.destroy({ where: { UserId: user.userId, PostId: postId } });
+    } else {
+      await post.decrement('likes'); // 게시글의 likes 속성을 1 감소
+      await like.destroy(); // 좋아요 삭제
       return res
         .status(200)
         .json({ message: '게시글의 좋아요를 취소하였습니다.' });
