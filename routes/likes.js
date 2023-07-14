@@ -13,7 +13,7 @@ router.put('/:postId', authMiddleware, async (req, res) => {
       attributes: ['postId', 'likes'], // 게시글의 postId와 likes 속성만 가져옴
     });
     if (!post) {
-      return res.status(400).json({ error: '게시글이 존재하지 않습니다.' });
+      return res.status(404).json({ error: '게시글이 존재하지 않습니다.' });
     }
 
     const [like, created] = await Likes.findOrCreate({
@@ -39,7 +39,7 @@ router.put('/:postId', authMiddleware, async (req, res) => {
 });
 
 // 좋아요 게시글 조회 API
-router.get('/posts', authMiddleware, async (req, res) => {
+router.get('/get', authMiddleware, async (req, res) => {
   const { user } = res.locals;
   try {
     // 사용자가 좋아요한 게시물 ID 조회

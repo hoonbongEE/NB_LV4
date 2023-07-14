@@ -8,7 +8,6 @@ require('dotenv').config(); // dotenv를 사용하여 환경 변수를 설정합
 
 router.post('/signup', async (req, res) => {
   const { email, password, nickname } = req.body; // 요청 본문에서 email, password, nickname을 추출합니다.
-  // console.log(email, password, nickname);
 
   try {
     const exEmail = await Users.findOne({ where: { email } }); // 이메일을 사용하여 Users 모델에서 이미 등록된 사용자인지 확인합니다.

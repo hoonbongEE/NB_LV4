@@ -71,9 +71,9 @@ router.patch('/:commentId', authMiddleware, async (req, res) => {
 
   try {
     const comment = await Comments.findOne({ where: { commentId } });
-    console.log(comment);
+
     if (!comment) {
-      res.status(400).json({ message: '존재하지 않는 댓글입니다.' });
+      res.status(404).json({ message: '존재하지 않는 댓글입니다.' });
       return;
     }
     await Comments.update({ content }, { where: { commentId } });
@@ -91,9 +91,9 @@ router.delete('/:commentId', authMiddleware, async (req, res) => {
 
   try {
     const comment = await Comments.findOne({ where: { commentId } });
-    console.log(comment);
+
     if (!comment) {
-      res.status(400).json({ message: '존재하지 않는 댓글입니다.' });
+      res.status(404).json({ message: '존재하지 않는 댓글입니다.' });
       return;
     }
     await comment.destroy({ where: { commentId } });

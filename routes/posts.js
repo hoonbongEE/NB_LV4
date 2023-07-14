@@ -37,10 +37,9 @@ router.get('/', async (req, res) => {
 
 //  게시글 작성 API
 router.post('/', authMiddleware, async (req, res) => {
-  // "/posts" 경로에 대한 POST 요청을 보낸다.
   const { title, content } = req.body;
   const { user } = res.locals;
-  // console.log(user);
+
   try {
     const createdPosts = await Posts.create({
       // Posts.create() 메소드를 사용하여 새로운 게시글 생성한다.

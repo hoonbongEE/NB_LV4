@@ -8,7 +8,6 @@ require('dotenv').config();
 // 로그인 API
 router.post('/login', async (req, res) => {
   const { email, password } = req.body; // 클라이언트에서 email과 password를 받습니다.
-  // console.log(email, password);
 
   const exUser = await Users.findOne({ where: { email } }); // 받은 이메일에 해당하는 사용자를 데이터베이스에서 찾습니다.
   if (!exUser) {
