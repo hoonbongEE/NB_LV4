@@ -12,8 +12,8 @@ router.post('/posts/:postId', authMiddleware, async (req, res) => {
   //   console.log(content);
   try {
     const createComments = await Comments.create({
-      PostId: postId,
-      UserId: user.userId,
+      postId: postId,
+      userId: user.userId,
       nickname: user.nickname,
       content,
       createAt: new Date(),

@@ -43,7 +43,7 @@ router.post('/', authMiddleware, async (req, res) => {
   try {
     const createdPosts = await Posts.create({
       // Posts.create() 메소드를 사용하여 새로운 게시글 생성한다.
-      UserId: user.userId,
+      userId: user.userId,
       title,
       content,
     });
@@ -133,14 +133,14 @@ router.delete('/:postId', authMiddleware, async (req, res) => {
     if (!posts) {
       return res.status(404).json({ error: '게시글이 존재하지 않습니다.' }); // 게시물이 없는 경우 오류메세지를 보여준다.
     }
-    if (posts.UserId !== user.userId) {
+    if (posts.userId !== user.userId) {
       return res
         .status(403)
         .json({ error: '게시글의 삭제 권한이 존재하지 않습니다.' });
     }
     await Posts.destroy({
       where: {
-        [Op.and]: [{ postId: posts.postId }, { UserId: posts.UserId }],
+        [Op.and]: [{ postId: posts.postId }, { userId: posts.userId }],
       },
     });
     res.status(200).json({ data: '게시글을 삭제하였습니다.' }); // 완료시 보여주는 메세지
